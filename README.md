@@ -24,3 +24,4 @@ conf here
 ```
 
 ## License
+[MIT License] 2017, Enkh-Amar.G (https://opensource.org/licenses/MIT)
