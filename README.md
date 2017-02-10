@@ -5,7 +5,7 @@ Recognize a web sketch to generate HTML code. HTML template is fully responsive 
 
 Project is now on alpha testing. There are still many things left undone. If you're enjoyed, contribute it.
 
-"Khronometer" referenced from [Chronometer watch](https://en.wikipedia.org/wiki/Chronometer_watch)
+Project name referenced from [Chronometer watch](https://en.wikipedia.org/wiki/Chronometer_watch)
 
 ## Reporting Bugs and Contributing Code
 
