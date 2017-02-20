@@ -23,7 +23,7 @@ public class HyperTextBuilder {
     private Path file;
     
     private boolean isTagClosed = true;
-    private int tabIndentLevel = 1;
+    private int tabIndentLevel = 2;
     private String tab = "   ";
     
     public HyperTextBuilder(String templateName){
@@ -49,6 +49,8 @@ public class HyperTextBuilder {
                     new File(templateDir+"/css/bootstrap-theme.min.css"));
             copyFile(new File(libBootstrap+"/js/bootstrap.min.js"), 
                     new File(templateDir+"/js/bootstrap.min.js"));
+            copyFile(new File(libBootstrap+"/css/style.css"), 
+                    new File(templateDir+"/css/style.css"));
         } catch (IOException ex) {
             Logger.getLogger(HyperTextBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -56,8 +58,12 @@ public class HyperTextBuilder {
         
         // Construct HTML
         setHeader();
-        
+        setBody();
         setFooter();
+    }
+    
+    private void setBody(){
+        
     }
     
     private void setHeader(){
@@ -65,15 +71,23 @@ public class HyperTextBuilder {
                 "<!DOCTYPE html>", 
                 "<html>",
                 "   <head>",
+                "       <meta charset='UTF-8'>",
+                "       <meta author='Khronometer'>",
+                "       <link href=\"css/bootstrap.min.css\" rel=\"stylesheet\" type=\"text/css\"/>",
+                "       <link href=\"css/bootstrap-theme.min.css\" rel=\"stylesheet\" type=\"text/css\"/>",
+                "       <link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\"/>",
+                "       <script src=\"js/bootstrap.min.js\" type=\"text/javascript\"></script>",
                 "       <title>"+this.templateName+"</title>",
                 "   </head>",
-                "   <body>"
+                "   <body>",
+                "       <div class\"bdy\"'>"
         );
         lines.addAll(head);
     }
     
     private void setFooter(){
         List<String> foot = Arrays.asList(
+                "       </div>",
                 "   </body>", 
                 "</html>"
         );
