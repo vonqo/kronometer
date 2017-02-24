@@ -97,11 +97,15 @@ public class SketchRecognation {
                             Core.rectangle(originalImage, rect.tl(), rect.br(), new Scalar(20, 20, 20), -1, 4, 0);
                             Imgproc.drawContours(originalImage, contours, i, new Scalar(0, 255, 0, .8), 2);
                             
-                            Highgui.imwrite("dankla.png", originalImage);
+                            Highgui.imwrite("dankling.png", originalImage);
                         }
                     }
                 }
             }
         }
+    }
+    
+    public Mat getMat(){
+        return this.originalImage;
     }
 }
