@@ -8,19 +8,22 @@ Project is now on alpha testing. There are still many things left undone. If you
 Project name referenced from [Chronometer watch](https://en.wikipedia.org/wiki/Chronometer_watch)
 
 ## Reporting Bugs and Contributing Code
+I haven't formulate any contributing note so you can mail to lupino.liberty@gmail.com
+
+You can report issue [here](https://github.com/lupino22/khronometer/issues)
 
 ## Install
 ### Dependency
 * JDK 8
 * OpenCV 2.4 - Open source computer vision library
-* Tess4J - JNA wrapper for Tesseract OCR API
+* ~~Tess4J - JNA wrapper for Tesseract OCR API~~
 * Java EE 7 compatible server (recommended: [Glassfish](https://glassfish.java.net))
 
 This project build with Apache Ant
 
 ### Configuration
 ```
-conf here
+conf here (still working on it)
 ```
 
 ## License
