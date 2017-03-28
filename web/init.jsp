@@ -12,7 +12,7 @@
 <%@page import="javafx.scene.image.Image"%>
 <%@page import="javax.imageio.ImageIO"%>
 <%@page import="org.opencv.highgui.Highgui"%>
-<%@page import="mn.scio.processor.SketchRecognation"%>
+<%@page import="mn.scio.processor.SketchRecognition"%>
 <%@page import="org.opencv.core.Core"%>
 <%@page import="java.net.URL"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -25,21 +25,17 @@
     <body>
         <h1>Alpha test phase</h1>
         <% 
-//            URL url = getClass().getResource("/mn/scio/resource/hand2.jpg");
-//            String dnk = "/home/lupino/GlassFish_Server/glassfish/domains/domain1/config/dankla.png";
-//            StringBuilder path = new StringBuilder(url.toString());
-//            path = path.delete(0, 5);
-            //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            Utility util = new Utility();
             
             URL url = new URL("http://localhost:8080/khronometer/imageOriginal");
-            BufferedImage img = ImageIO.read(url);
-            Utility openUtil = new Utility();
+            BufferedImage img = null;
+            img = ImageIO.read(url);
+            
+            byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
             
             Mat mat = new Mat(img.getHeight(), img.getWidth(), CvType.CV_8UC3);
-            byte[] data = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
-            mat.put(0, 0, data);
-            
-            SketchRecognation a = new SketchRecognation(mat);
+            mat.put(0,0,pixels);
+            SketchRecognition a = new SketchRecognition(mat);
             a.findRectangle();
             
         %>

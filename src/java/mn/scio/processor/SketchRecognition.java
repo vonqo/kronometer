@@ -1,9 +1,11 @@
 package mn.scio.processor;
 
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import mn.scio.renders.ImageDetection;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import static org.opencv.highgui.Highgui.imread;
@@ -19,20 +21,22 @@ import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 import static org.opencv.highgui.Highgui.imread;
+import static org.opencv.highgui.Highgui.imread;
+import static org.opencv.highgui.Highgui.imread;
 
 /**
  *
  * @author lupino
  * Core sketch recognition process
  */
-public class SketchRecognation {
+public class SketchRecognition {
     
     private Mat image;
     private Mat originalImage;
     private List<MatOfPoint> contours;
     private Mat hierarchy;
     
-    public SketchRecognation(Mat input){
+    public SketchRecognition(Mat input){
         this.originalImage = input;
         this.image = new Mat();
         this.hierarchy = new Mat();
@@ -92,12 +96,15 @@ public class SketchRecognation {
                         Rect rect = Imgproc.boundingRect(points);
                         
                         if (Math.abs(rect.height - rect.width) < 50000) {
-                            System.out.println(i+"- x: "+rect.x+", y: "+rect.y);
+                            System.out.println(i+" x: "+rect.x+", y: "+rect.y);
                             
                             Core.rectangle(originalImage, rect.tl(), rect.br(), new Scalar(20, 20, 20), -1, 4, 0);
                             Imgproc.drawContours(originalImage, contours, i, new Scalar(0, 255, 0, .8), 2);
                             
-                            Highgui.imwrite("dankling.png", originalImage);
+                            Utility util = new Utility();
+                            ImageDetection id = new ImageDetection();
+                            id.setData(util.matToBufferedImage(originalImage));
+                            Highgui.imwrite("detected_layers.png", originalImage);
                         }
                     }
                 }

@@ -13,12 +13,14 @@ import org.opencv.highgui.Highgui;
  */
 public class Utility {
 
-    private static String fileName = "hand2.jpg";
-
+    // Static library loader
     static {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
-    
+
+    /**
+     * Supportive methods copied from StackOverflow :D
+     */
     public Mat bufferedImage2Mat(BufferedImage in) {
         Mat out;
         byte[] data;
@@ -48,11 +50,44 @@ public class Utility {
         out.put(0, 0, data);
         return out;
     }
-    
+
     public Mat bufferedImageToMat(BufferedImage bi) {
         Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
         byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
         mat.put(0, 0, data);
         return mat;
+    }
+
+    public BufferedImage matToBufferedImage(Mat matrix) {
+        int cols = matrix.cols();
+        int rows = matrix.rows();
+        int elemSize = (int) matrix.elemSize();
+        byte[] data = new byte[cols * rows * elemSize];
+        int type;
+        matrix.get(0, 0, data);
+        switch (matrix.channels()) {
+            case 1:
+                type = BufferedImage.TYPE_BYTE_GRAY;
+                break;
+            case 3:
+                type = BufferedImage.TYPE_3BYTE_BGR;
+                // bgr to rgb  
+                byte b;
+                for (int i = 0; i < data.length; i = i + 3) {
+                    b = data[i];
+                    data[i] = data[i + 2];
+                    data[i + 2] = b;
+                }
+                break;
+            default:
+                return null;
+        }
+        BufferedImage bimg = new BufferedImage(cols, rows, type);
+//            // Reuse existing BufferedImage if possible
+//            if (bimg == null || bimg.getWidth() != cols || bimg.getHeight() != rows || bimg.getType() != type) {
+//                bimg = new BufferedImage(cols, rows, type);
+//            }
+        bimg.getRaster().setDataElements(0, 0, cols, rows, data);
+        return bimg;
     }
 }

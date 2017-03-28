@@ -33,12 +33,14 @@ public class ImageDetection extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
+    private static BufferedImage bi;
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("image/jpg");
-        String pathToWeb = getServletContext().getRealPath(File.separator);
-        File f = new File(pathToWeb + "uploads/sketch_detection.jpg");
-        BufferedImage bi = ImageIO.read(f);
+        
+        
         OutputStream outs = response.getOutputStream();
         ImageIO.write(bi, "jpg", outs);
         outs.close();
@@ -82,5 +84,9 @@ public class ImageDetection extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+    public void setData(BufferedImage buffImage){
+        this.bi = buffImage;
+    }
 
 }
