@@ -2,6 +2,14 @@ package mn.scio.processor;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -58,7 +66,7 @@ public class Utility {
         return mat;
     }
 
-    public BufferedImage matToBufferedImage(Mat matrix) {
+    public static BufferedImage matToBufferedImage(Mat matrix) {
         int cols = matrix.cols();
         int rows = matrix.rows();
         int elemSize = (int) matrix.elemSize();
@@ -83,11 +91,73 @@ public class Utility {
                 return null;
         }
         BufferedImage bimg = new BufferedImage(cols, rows, type);
-//            // Reuse existing BufferedImage if possible
-//            if (bimg == null || bimg.getWidth() != cols || bimg.getHeight() != rows || bimg.getType() != type) {
-//                bimg = new BufferedImage(cols, rows, type);
-//            }
         bimg.getRaster().setDataElements(0, 0, cols, rows, data);
         return bimg;
+    }
+    
+    private List<String> fileList = new ArrayList<String>();
+    private String SOURCE_FOLDER;
+    
+    public void setZipSource(String SOURCE) {
+        this.SOURCE_FOLDER = SOURCE;
+    }
+    
+    public void zipCompress(String zipFile) {
+        generateFileList(new File(SOURCE_FOLDER));
+        
+        byte[] buffer = new byte[1024];
+        String source = new File(SOURCE_FOLDER).getName();
+        FileOutputStream fos = null;
+        ZipOutputStream zos = null;
+        try {
+            fos = new FileOutputStream(zipFile);
+            zos = new ZipOutputStream(fos);
+
+            System.out.println("Output to Zip : " + zipFile);
+            FileInputStream in = null;
+
+            for (String file: this.fileList) {
+                System.out.println("File Added : " + file);
+                ZipEntry ze = new ZipEntry(source + File.separator + file);
+                zos.putNextEntry(ze);
+                try {
+                    in = new FileInputStream(SOURCE_FOLDER + File.separator + file);
+                    int len;
+                    while ((len = in .read(buffer)) > 0) {
+                        zos.write(buffer, 0, len);
+                    }
+                } finally {
+                    in.close();
+                }
+            }
+            
+            zos.closeEntry();
+            System.out.println("Folder successfully compressed");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                zos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    private void generateFileList(File node) {
+        if (node.isFile()) {
+            fileList.add(generateZipEntry(node.toString()));
+        }
+        if (node.isDirectory()) {
+            String[] subNote = node.list();
+            for (String filename: subNote) {
+                generateFileList(new File(node, filename));
+            }
+        }
+    }
+    
+    private String generateZipEntry(String file) {
+        return file.substring(SOURCE_FOLDER.length() + 1, file.length());
     }
 }

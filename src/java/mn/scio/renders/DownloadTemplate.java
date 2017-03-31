@@ -5,12 +5,11 @@
  */
 package mn.scio.renders;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,9 +20,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author lupino
  */
-@WebServlet(name = "ImageDetection", urlPatterns = {"/imageDetection"})
-public class ImageDetection extends HttpServlet {
-
+@WebServlet(name = "DownloadTemplate", urlPatterns = {"/DownloadTemplate"})
+public class DownloadTemplate extends HttpServlet {
+    
+    private static String absoluteFileName;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -33,16 +33,25 @@ public class ImageDetection extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
-    private static BufferedImage bi;
-    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("image/jpg");
+        response.setContentType("application/zip");
         
-        OutputStream outs = response.getOutputStream();
-        ImageIO.write(bi, "jpg", outs);
-        outs.close();
+         // This should send the file to browser
+         OutputStream out = response.getOutputStream();
+         File my_file = new File(absoluteFileName);
+         FileInputStream in = new FileInputStream(my_file);
+         byte[] buffer = new byte[4096];
+         int length;
+         while ((length = in.read(buffer)) > 0){
+            out.write(buffer, 0, length);
+         }
+         in.close();
+         out.flush();
+    }
+    
+    public void setFile(String FILE){
+        this.absoluteFileName = FILE;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -83,8 +92,5 @@ public class ImageDetection extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
-    public void setData(BufferedImage buffImage){
-        this.bi = buffImage;
-    }
+
 }

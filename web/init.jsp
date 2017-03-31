@@ -4,6 +4,7 @@
     Author     : lupino
 --%>
 
+<%@page import="mn.scio.processor.HyperTextBuilder"%>
 <%@page import="java.awt.image.DataBufferByte"%>
 <%@page import="org.opencv.core.Mat"%>
 <%@page import="org.opencv.core.CvType"%>
@@ -37,11 +38,20 @@
             mat.put(0,0,pixels);
             SketchRecognition a = new SketchRecognition(mat);
             a.findRectangle();
-            
+            HyperTextBuilder builder = new HyperTextBuilder("alphatest");
+            builder.initTemplate();
+            builder.finalizeTemplate();
         %>
             <br>Original img<br>
             <img src="imageOriginal" width="500">
             <br>Detection img<br>
             <img src="imageDetection" width="500">
+            <button id="download">Download Template</button>
+            <script>
+                var btn = document.getElementById("download");
+                btn.onclick = function(){
+                    location.href = '/khronometer/DownloadTemplate';
+                }
+            </script>
     </body>
 </html>
