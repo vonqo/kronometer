@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -83,8 +84,10 @@ public class HyperTextBuilder {
         int tablvl = 0;
         for (int i = 0; i < rects.size(); i++) {
             int col = rects.get(i).width / columnSize;
-            body.add(lineBuilder(tablvl, "<div class=\"col-md-"+col+"\"></div>"));
+            body.add(lineBuilder(tablvl, "<div style=\"border: 1px solid 000;\" class=\"col-md-"+col+"\">"));
+            body.add(lineBuilder(tablvl, "</div>"));
         }
+        lines.addAll(body);
     }
 
     private String lineBuilder(int tabLevel, String code) {
@@ -95,7 +98,7 @@ public class HyperTextBuilder {
         line.append(code);
         return line.toString();
     }
-
+    
     private void setHeader() {
         List<String> head = Arrays.asList(
                 "<!DOCTYPE html>",
@@ -132,9 +135,9 @@ public class HyperTextBuilder {
             Files.write(file, lines, Charset.forName("UTF-8"));
             Utility util = new Utility();
             util.setZipSource(templateDir);
-            util.zipCompress("zippedTemplateLmao.zip");
+            util.zipCompress(templateName + ".zip");
             DownloadTemplate dt = new DownloadTemplate();
-            File temp = new File("zippedTemplateLmao.zip");
+            File temp = new File(templateName + ".zip");
             dt.setFile(temp.getAbsolutePath());
         } catch (IOException ex) {
             Logger.getLogger(HyperTextBuilder.class.getName()).log(Level.SEVERE, null, ex);
