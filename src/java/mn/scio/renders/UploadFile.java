@@ -5,8 +5,11 @@
  */
 package mn.scio.renders;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
 import javax.servlet.ServletException;
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -37,13 +41,20 @@ public class UploadFile extends HttpServlet {
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
 
-        String templateName = request.getParameter("demo_name"); // Retrieves <input type="text" name="description">
-        Part filePart = request.getPart("demo_img"); // Retrieves <input type="file" name="file">
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
-//        InputStream fileContent = filePart.getInputStream();
-        System.out.println(fileName);
-        System.out.println(templateName);
-        
+        String templateName = request.getParameter("demo_name");
+        Part filePart = request.getPart("demo_img");
+        try{
+            // String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
+            InputStream fileContent = filePart.getInputStream();
+            System.out.println(templateName);
+            File file = new File("uploads/"+templateName+".jpg");
+            System.out.println(file.getAbsolutePath());
+            OutputStream outputStream = new FileOutputStream(file);
+            IOUtils.copy(fileContent, outputStream);
+            outputStream.close();
+        }catch(NullPointerException ex){
+            System.out.println("null param");
+        }
         response.getWriter().write("uploaded lmao");  
         
         System.out.println("fking shit");

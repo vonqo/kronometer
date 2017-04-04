@@ -15,7 +15,8 @@ You can report issue [here](https://github.com/lupino22/khronometer/issues)
 ## Install
 ### Dependency
 * JDK 8
-* OpenCV 2.4 - Open source computer vision library
+* OpenCV 2.4
+* Apache Commons IO
 * ~~Tess4J - JNA wrapper for Tesseract OCR API~~
 * Java EE 7 compatible server (recommended: [Glassfish](https://glassfish.java.net))
 

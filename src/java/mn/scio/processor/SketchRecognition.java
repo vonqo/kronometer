@@ -48,10 +48,10 @@ public class SketchRecognition {
 
     private void setFilter() {
         //Apply gaussian blur to remove noise
-        Imgproc.GaussianBlur(image, image, new Size(5, 5), 0);
+        Imgproc.GaussianBlur(image, image, new Size(7, 7), 0);
 
         //Threshold
-        //Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 3, 1);
+        Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 3, 1);
         //Invert the image
         Core.bitwise_not(image, image);
 
@@ -100,14 +100,14 @@ public class SketchRecognition {
                         // Get bounding rect of contour
                         Rect rect = Imgproc.boundingRect(points);
 
-                        if (Math.abs(rect.height - rect.width) < 1000) {
+//                        if (Math.abs(rect.height - rect.width) < 1000) {
                             System.out.println(i + "| x: " + rect.x + " + width("+rect.width+"), y: " + rect.y + "+ width("+rect.height+")");
                             rects.add(rect);
                             Core.rectangle(originalImage, rect.tl(), rect.br(), new Scalar(20, 20, 20), -1, 4, 0);
                             Imgproc.drawContours(originalImage, contours, i, new Scalar(0, 255, 0, .8), 2);
                             
                             // Highgui.imwrite("detected_layers"+i+".png", originalImage);
-                        }
+//                        }
                     }
                 }
             }

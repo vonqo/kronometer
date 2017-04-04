@@ -37,6 +37,9 @@ public class HyperTextBuilder {
     public static int rect_height = 0;
 
     private int columnSize = 0;
+    private int rowSize = 0;
+    private int rowNum = 0;
+    private GridBox[] bootstrapGridSystem;
 
     public HyperTextBuilder(String templateName) {
         this.templateName = templateName;
@@ -72,20 +75,43 @@ public class HyperTextBuilder {
         this.file = Paths.get(templateDir + "/index.html");
 
         columnSize = rect_width / 12;
-
+        rowNum = rect_height / (columnSize/2);
+        rowSize = rect_height / rowNum;
+        
+        bootstrapGridSystem = new GridBox[rects.size()];
+        
         // Construct HTML
         setHeader();
         setBody();
         setFooter();
     }
+    
+    private void bootstrapGrid(){
+        for(int i = 0; i < rects.size(); i++){
+            int disX = rects.get(i).x / columnSize;
+            int disY = rects.get(i).y / rowSize;
+            bootstrapGridSystem[i] = new GridBox(disX+1, disY+1, 
+                    (rects.get(i).width/columnSize), (rects.get(i).height/rowSize));
+        }
+    }
 
     private void setBody() {
         List<String> body = new ArrayList<String>();
         int tablvl = 0;
+        
+        // sort grid 
+        bootstrapGrid();
+        for (int i = 0; i < bootstrapGridSystem.length; i++){
+            
+        }
+        
+        
+        
         for (int i = 0; i < rects.size(); i++) {
             int col = rects.get(i).width / columnSize;
-            body.add(lineBuilder(tablvl, "<div style=\"border: 1px solid 000;\" class=\"col-md-"+col+"\">"));
-            body.add(lineBuilder(tablvl, "</div>"));
+            body.add(lineBuilder(tablvl, "<div "
+                    + "style=\"height: "+rects.get(i).height+"; margin\" "
+                    + "class=\"khrono-div col-md-"+col+"\">"));
         }
         lines.addAll(body);
     }

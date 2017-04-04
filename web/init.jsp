@@ -28,7 +28,8 @@
         <% 
             Utility util = new Utility();
             
-            URL url = new URL("http://localhost:8080/khronometer/imageOriginal");
+            String imgurl = "glasses";
+            URL url = new URL("http://localhost:8080/khronometer/imageOriginal?img="+imgurl);
             BufferedImage img = null;
             img = ImageIO.read(url);
             
@@ -43,7 +44,7 @@
             builder.finalizeTemplate();
         %>
             <br>Original img<br>
-            <img src="imageOriginal" width="500">
+            <img src="imageOriginal?img=<%=imgurl%>" width="500">
             <br>Detection img<br>
             <img src="imageDetection" width="500">
             <button id="download">Download Template</button>

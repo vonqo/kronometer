@@ -26,6 +26,7 @@
 
         <!-- Theme CSS -->
         <link href="css/grayscale.min.css" rel="stylesheet">
+        <link rel="icon" href="img/favicon.png" type="image/x-icon" />
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -82,8 +83,8 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-8 col-md-offset-2">
-                            <div style="padding-bottom: 70px">
-                                <img src="img/logo_medium.png" alt="" width="420"/>
+                            <div style="padding-bottom: 100px">
+                                <img src="img/logo_medium.png" alt="" width="300"/>
                             </div>
                             <div id="demo-bar" style="">
                                 <form id="demo-form" class="form-horizontal" method="post" enctype="multipart/form-data">
@@ -94,7 +95,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-sm-3" for="demo_name">Загвар нэр:</label>
+                                        <label class="control-label col-sm-3" for="demo_name">Загварын нэр:</label>
                                         <div class="col-sm-6">
                                             <input type="text" name="demo_name" class="form-control" id="demo_name" placeholder="">
                                         </div>
@@ -137,7 +138,7 @@
                         <p>Хамтдаа хөгжие! Хүсвэл та ч хөгжүүлэлтэнд оролцож боломжтой. Мөн өөрийнхөөрөө эх кодыг өөрчлөх боломж нээлттэй :D</p>
                         <ul class="list-inline banner-social-buttons">
                             <li>
-                                <a href="https://github.com/lupino22/kronometer" target="_blank" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                                <a href="https://github.com/lupino22/kronometer" target="_blank" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="">Github</span></a>
                             </li>
                         </ul>
                     </div>
@@ -162,7 +163,6 @@
                 <p>Альфа тест | Хөгжүүлсэн Г.Энх-Амар</p>
             </div>
         </footer>
-
         <!-- jQuery -->
         <script src="vendor/jquery/jquery.js"></script>
 
@@ -180,7 +180,7 @@
                 console.log("clicking");
                 var formData = new FormData($(this)[0]);
                 console.log(formData);
-                
+
                 $.ajax({
                     url: 'uploadFile',
                     type: 'POST',
@@ -188,8 +188,8 @@
                     success: function (data) {
                         alert(data)
                     },
-                    error: function(data){
-                        alert("err"+data)
+                    error: function (data) {
+                        alert("err" + data)
                     },
                     cache: false,
                     contentType: false,
