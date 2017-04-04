@@ -37,6 +37,7 @@
         <style type="text/css">
             #demo-bar{
                 font-size: 18px;
+                padding-bottom: 100px;
             }
         </style>
     </head>
@@ -81,26 +82,24 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-8 col-md-offset-2">
-                            <div>
-                                <img src="img/logo_medium.png" alt=""/>
+                            <div style="padding-bottom: 70px">
+                                <img src="img/logo_medium.png" alt="" width="420"/>
                             </div>
                             <div id="demo-bar" style="">
-                                <form class="form-horizontal">
-                                    <div class="form-group">
-                                        <label class="control-label col-sm-3" for="demo_name">Загвар нэр:</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control" id="demo_name" placeholder="">
-                                        </div>
-                                    </div>
+                                <form id="demo-form" class="form-horizontal" method="post" enctype="multipart/form-data">
                                     <div class="form-group">
                                         <label class="control-label col-sm-3" for="demo_img">Гар зураг:</label>
                                         <div class="col-sm-9">
-                                            <input type="file" class="" id="demo_img">
+                                            <input type="file" class="" id="demo_img" name="demo_img">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <div style="padding-top: 50px">
-                                            <button type="submit" class="btn btn-lg">Загвар Урлах</button>
+                                        <label class="control-label col-sm-3" for="demo_name">Загвар нэр:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="demo_name" class="form-control" id="demo_name" placeholder="">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <button type="submit" id="try_demo" style="width: 100%" class="btn btn-default">Загвар Урлах</button>
                                         </div>
                                     </div>
                                 </form>
@@ -119,10 +118,11 @@
         <!-- About Section -->
         <section id="about" class="container content-section text-center">
             <div class="row">
-                <div class="col-lg-8 col-lg-offset-2">
-                    <h2>Хэрхэн ажилладаг вэ</h2>
-                    <p>text here</p>
+                <div class="col-lg-12">
+                    <h2>Хэрхэн ажилладаг вэ</h2><br>
                     <img src="img/workflow.png" alt=""/>
+                    <br><br><br><br><hr>
+                    <p>Back-end зохион байгуулалт</p>
                     <img src="img/architecture.png" alt=""/>
                 </div>
             </div>
@@ -137,7 +137,7 @@
                         <p>Хамтдаа хөгжие! Хүсвэл та ч хөгжүүлэлтэнд оролцож боломжтой. Мөн өөрийнхөөрөө эх кодыг өөрчлөх боломж нээлттэй :D</p>
                         <ul class="list-inline banner-social-buttons">
                             <li>
-                                <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                                <a href="https://github.com/lupino22/kronometer" target="_blank" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
                             </li>
                         </ul>
                     </div>
@@ -175,6 +175,28 @@
         <!-- Theme JavaScript -->
         <script src="js/grayscale.min.js"></script>
 
+        <script>
+            $("#demo-form").submit(function () {
+                console.log("clicking");
+                var formData = new FormData($(this)[0]);
+                console.log(formData);
+                
+                $.ajax({
+                    url: 'uploadFile',
+                    type: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        alert(data)
+                    },
+                    error: function(data){
+                        alert("err"+data)
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                });
+            });
+        </script>
     </body>
 
 </html>
