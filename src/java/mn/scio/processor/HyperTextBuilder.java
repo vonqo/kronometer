@@ -39,7 +39,7 @@ public class HyperTextBuilder {
     private int columnSize = 0;
     private int rowSize = 0;
     private int rowNum = 0;
-    private GridBox[] bootstrapGridSystem;
+    private GridBox[] grids;
 
     public HyperTextBuilder(String templateName) {
         this.templateName = templateName;
@@ -74,11 +74,6 @@ public class HyperTextBuilder {
         }
         this.file = Paths.get(templateDir + "/index.html");
 
-        columnSize = rect_width / 12;
-        rowNum = rect_height / (columnSize/2);
-        rowSize = rect_height / rowNum;
-        
-        bootstrapGridSystem = new GridBox[rects.size()];
         
         // Construct HTML
         setHeader();
@@ -86,34 +81,95 @@ public class HyperTextBuilder {
         setFooter();
     }
     
-    private void bootstrapGrid(){
-        for(int i = 0; i < rects.size(); i++){
-            int disX = rects.get(i).x / columnSize;
-            int disY = rects.get(i).y / rowSize;
-            bootstrapGridSystem[i] = new GridBox(disX+1, disY+1, 
-                    (rects.get(i).width/columnSize), (rects.get(i).height/rowSize));
+    /**
+     * I know this part of my code is FUCKING AWFUL. I just need to test how it works
+     * so relax! 
+     */
+    private void bootstrapGrid(List<GridBox> rect, int colSize){
+        
+        // lame ass bulle sort
+        // sort by area
+        GridBox temp;
+        for (int i = 0; i < rect.size(); i++) {
+            for (int j = 1; j < (rect.size() - i); j++) {
+                if (rect.get(j - 1).area < rect.get(j).area) {
+                    temp = rect.get(j - 1);
+                    rect.set(j-1, rect.get(j));
+                    rect.set(j, temp);
+                }
+            }
+        }
+        for (int i = 0; i < rect.size(); i++){
+            System.out.println("y: "+rect.get(i).rect_y+"("+rect.get(i).height+") | x: "+rect.get(i).rect_x+"("+rect.get(i).width+") | Area: "+ rect.get(i).area);
+        }
+        
+        System.out.println("------------------------------------\nSIZE:"+rect.size());
+        
+        for (int i = 0; i < rect.size()-1; i++){
+            GridBox i2 = rect.get(i);
+            if(!i2.used){
+                for(int j = 1; j < rect.size(); j++){
+                    GridBox j2 = rect.get(j);
+                    if(i2.rect_x < j2.rect_x && 
+                            (i2.rect_x+i2.width) > (j2.rect_x+j2.width)){
+                        if(i2.rect_y < j2.rect_y &&
+                                (i2.rect_y+i2.height) > (j2.rect_y+j2.height)){
+                            rect.get(i).childs.add(new GridBox(rect.get(j)));
+                            rect.get(j).used = true;
+                        }
+                    }
+                }
+            }
+            if(!rect.get(i).childs.isEmpty()){
+                colSize = i2.width / 12;
+                int row = i2.height / (colSize/2);
+                if(row == 0){ row = 1; }
+                int rSize = i2.height / row;
+                for(int k = 0; k < rect.get(i).childs.size(); k++){
+                    rect.get(i).childs.get(k).x = Math.abs(rect.get(i).rect_x - rect.get(i).childs.get(k).rect_x) / colSize;
+                    rect.get(i).childs.get(k).y = Math.abs(rect.get(i).rect_y - rect.get(i).childs.get(k).rect_y) / rSize;
+                }
+                bootstrapGrid(rect.get(i).childs, colSize);
+            }
+        }
+        for(int i = 0; i < rect.size(); i++){
+            if(rect.get(i).used){
+                rect.remove(i);
+                i--;
+            }
+        }
+        
+        
+        for (int i = 0; i < rect.size(); i++){
+            System.out.println("y: "+rect.get(i).y+" | x: "+rect.get(i).x+" | Area: "+ rect.get(i).area);
+            if(!rect.get(i).childs.isEmpty()){
+                for(int e = 0; e < rect.get(i).childs.size(); e++){
+                    System.out.println("    [child] y: "+rect.get(i).childs.get(e).y+" | x: "+rect.get(i).childs.get(e).x+" | Area: "+ rect.get(i).childs.get(e).area);
+                }
+            }    
         }
     }
 
     private void setBody() {
         List<String> body = new ArrayList<String>();
+        List<GridBox> gridx = new ArrayList<GridBox>();
         int tablvl = 0;
         
-        // sort grid 
-        bootstrapGrid();
-        for (int i = 0; i < bootstrapGridSystem.length; i++){
-            
+        columnSize = rect_width / 12;
+        rowNum = rect_height / (columnSize/2);
+        rowSize = rect_height / rowNum;
+        
+        grids = new GridBox[rects.size()];
+        
+        for(int i = 0; i < rects.size(); i++){
+            Rect temp = rects.get(i);
+            int disX = temp.x / columnSize;
+            int disY = temp.y / rowSize;
+            gridx.add(new GridBox(disX+1, disY+1, 
+                    temp.width, temp.height, temp.x, temp.y));
         }
         
-        
-        
-        for (int i = 0; i < rects.size(); i++) {
-            int col = rects.get(i).width / columnSize;
-            body.add(lineBuilder(tablvl, "<div "
-                    + "style=\"height: "+rects.get(i).height+"; margin\" "
-                    + "class=\"khrono-div col-md-"+col+"\">"));
-        }
-        lines.addAll(body);
+        bootstrapGrid(gridx, columnSize);
     }
 
     private String lineBuilder(int tabLevel, String code) {
