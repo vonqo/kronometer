@@ -25,12 +25,13 @@ public class HyperTextBuilder {
 
     private String templateName;
     private List<String> lines = new ArrayList<String>(); // index file
+    private List<String> body = new ArrayList<String>();
     private Path file;
     private String templateDir;
 
     private boolean isTagClosed = true;
     private int tabIndentLevel = 4;
-    private String tab = "   ";
+    private String tab = "\t";
 
     public static List<Rect> rects;
     public static int rect_width = 0;
@@ -38,8 +39,6 @@ public class HyperTextBuilder {
 
     private int columnSize = 0;
     private int rowSize = 0;
-    private int rowNum = 0;
-    private GridBox[] grids;
 
     public HyperTextBuilder(String templateName) {
         this.templateName = templateName;
@@ -99,11 +98,9 @@ public class HyperTextBuilder {
                 }
             }
         }
-        for (int i = 0; i < rect.size(); i++){
-            System.out.println("y: "+rect.get(i).rect_y+"("+rect.get(i).height+") | x: "+rect.get(i).rect_x+"("+rect.get(i).width+") | Area: "+ rect.get(i).area);
-        }
-        
-        System.out.println("------------------------------------\nSIZE:"+rect.size());
+//        for (int i = 0; i < rect.size(); i++){
+//            System.out.println("y: "+rect.get(i).rect_y+"("+rect.get(i).height+") | x: "+rect.get(i).rect_x+"("+rect.get(i).width+") | Area: "+ rect.get(i).area);
+//        }
         
         for (int i = 0; i < rect.size()-1; i++){
             GridBox i2 = rect.get(i);
@@ -111,9 +108,9 @@ public class HyperTextBuilder {
                 for(int j = 1; j < rect.size(); j++){
                     GridBox j2 = rect.get(j);
                     if(i2.rect_x < j2.rect_x && 
-                            (i2.rect_x+i2.width) > (j2.rect_x+j2.width)){
+                            (i2.rect_x+i2.rect_width) > (j2.rect_x+j2.rect_width)){
                         if(i2.rect_y < j2.rect_y &&
-                                (i2.rect_y+i2.height) > (j2.rect_y+j2.height)){
+                                (i2.rect_y+i2.rect_height) > (j2.rect_y+j2.rect_height)){
                             rect.get(i).childs.add(new GridBox(rect.get(j)));
                             rect.get(j).used = true;
                         }
@@ -121,13 +118,15 @@ public class HyperTextBuilder {
                 }
             }
             if(!rect.get(i).childs.isEmpty()){
-                colSize = i2.width / 12;
-                int row = i2.height / (colSize/2);
+                rect.get(i).merge();
+                colSize = i2.rect_width / 12;
+                int row = i2.rect_height / (colSize/2);
                 if(row == 0){ row = 1; }
-                int rSize = i2.height / row;
+                int rSize = i2.rect_height / row;
                 for(int k = 0; k < rect.get(i).childs.size(); k++){
                     rect.get(i).childs.get(k).x = Math.abs(rect.get(i).rect_x - rect.get(i).childs.get(k).rect_x) / colSize;
                     rect.get(i).childs.get(k).y = Math.abs(rect.get(i).rect_y - rect.get(i).childs.get(k).rect_y) / rSize;
+                    rect.get(i).childs.get(k).setUnitH(rSize);
                 }
                 bootstrapGrid(rect.get(i).childs, colSize);
             }
@@ -140,38 +139,95 @@ public class HyperTextBuilder {
         }
         
         
-        for (int i = 0; i < rect.size(); i++){
-            System.out.println("y: "+rect.get(i).y+" | x: "+rect.get(i).x+" | Area: "+ rect.get(i).area);
-            if(!rect.get(i).childs.isEmpty()){
-                for(int e = 0; e < rect.get(i).childs.size(); e++){
-                    System.out.println("    [child] y: "+rect.get(i).childs.get(e).y+" | x: "+rect.get(i).childs.get(e).x+" | Area: "+ rect.get(i).childs.get(e).area);
-                }
-            }    
-        }
+//        for (int i = 0; i < rect.size(); i++){
+//            System.out.println("y: "+rect.get(i).y+" | x: "+rect.get(i).x+" | Area: "+ rect.get(i).area);
+//            if(!rect.get(i).childs.isEmpty()){
+//                for(int e = 0; e < rect.get(i).childs.size(); e++){
+//                    System.out.println("    [child] y: "+rect.get(i).childs.get(e).y+" | x: "+rect.get(i).childs.get(e).x+" | Area: "+ rect.get(i).childs.get(e).area);
+//                }
+//            }
+//        }
     }
 
     private void setBody() {
-        List<String> body = new ArrayList<String>();
         List<GridBox> gridx = new ArrayList<GridBox>();
-        int tablvl = 0;
         
         columnSize = rect_width / 12;
-        rowNum = rect_height / (columnSize/2);
-        rowSize = rect_height / rowNum;
-        
-        grids = new GridBox[rects.size()];
+        rowSize = columnSize / 2;
         
         for(int i = 0; i < rects.size(); i++){
             Rect temp = rects.get(i);
             int disX = temp.x / columnSize;
             int disY = temp.y / rowSize;
-            gridx.add(new GridBox(disX+1, disY+1, 
-                    temp.width, temp.height, temp.x, temp.y));
+            gridx.add(new GridBox(disX+1, disY+1,
+                    temp.width/columnSize, temp.height/rowSize, temp.x, temp.y,
+                    temp.width, temp.height, rowSize/2));
         }
         
         bootstrapGrid(gridx, columnSize);
+        bootstrapBuilder(gridx, 0);
+        lines.addAll(body);
     }
+    
+    
+    private void bootstrapBuilder(List<GridBox> grid, int deep){
+        GridBox temp;
+        // sort by y then x
+        for (int i = 0; i < grid.size(); i++) {
+            for (int j = 1; j < (grid.size() - i); j++) {
+                if (grid.get(j - 1).y > grid.get(j).y) {
+                    temp = grid.get(j - 1);
+                    grid.set(j-1, grid.get(j));
+                    grid.set(j, temp);
+                }
+                if (grid.get(j - 1).y == grid.get(j).y) {
+                    if (grid.get(j - 1).x > grid.get(j).x) {
+                        temp = grid.get(j - 1);
+                        grid.set(j-1, grid.get(j));
+                        grid.set(j, temp);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < grid.size(); i++){
+            System.out.println("y: "+grid.get(i).y+"("+grid.get(i).height+") | x: "+grid.get(i).x+"("+grid.get(i).width+") | Area: "+ grid.get(i).area);
+        }
 
+        body.add(lineBuilder(deep, "<div class=\"row\">"));
+        deep++;
+        boolean newLine = true;
+        
+        int holder = 0;
+        
+        for (int i = 0; i < grid.size(); i++){
+            
+            temp = grid.get(i);
+            if((holder + temp.width) >= 12){
+                holder = 0;
+            }
+            
+            if(newLine){
+                if(temp.x > 1){
+                    holder = temp.x - holder;
+                    body.add(lineBuilder(deep, "<div class=\"col-sm-"+holder+"\">"));
+                    body.add(lineBuilder(deep, "</div>"));
+                }
+            }
+            
+            body.add(lineBuilder(deep, 
+                    "<div class=\"khrono-div col-sm-"+temp.width+"\" style=\"height:"+(temp.unit_h*temp.height)+"px; margin-top:"+(temp.y*temp.unit_h)+"px\">"));
+            holder += temp.width;
+            
+            
+            if(!temp.childs.isEmpty()){
+                bootstrapBuilder(temp.childs, deep+1);
+            }
+            body.add(lineBuilder(deep, "</div>"));
+        }
+        deep--;
+        body.add(lineBuilder(deep, "</div>"));
+    }
+    
     private String lineBuilder(int tabLevel, String code) {
         StringBuilder line = new StringBuilder();
         for (int e = 0; e < tabIndentLevel + tabLevel; e++) {
@@ -203,7 +259,7 @@ public class HyperTextBuilder {
 
     private void setFooter() {
         List<String> foot = Arrays.asList(
-                "           <div>",
+                "           </div>",
                 "       </div>",
                 "   </body>",
                 "</html>"

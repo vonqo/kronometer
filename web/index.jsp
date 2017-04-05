@@ -186,10 +186,10 @@
                     type: 'POST',
                     data: formData,
                     success: function (data) {
-                        alert(data)
+                        window.location.href = "/khronometer/init.jsp?req="+$('#demo_name').val()
                     },
                     error: function (data) {
-                        alert("err" + data)
+                        window.location.href = "/khronometer/init.jsp?req="+$('#demo_name').val()
                     },
                     cache: false,
                     contentType: false,
