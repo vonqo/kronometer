@@ -1,4 +1,4 @@
-package mn.scio.processor;
+package mn.sict.krono.controller;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;

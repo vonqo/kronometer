@@ -1,27 +1,17 @@
-package mn.scio.processor;
+package mn.sict.krono.controller;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import mn.scio.renders.ImageDetection;
+import mn.sict.krono.renders.ImageDetection;
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import static org.opencv.highgui.Highgui.imread;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
-import static org.opencv.highgui.Highgui.imread;
-import static org.opencv.highgui.Highgui.imread;
-import static org.opencv.highgui.Highgui.imread;
 
 /**
  *

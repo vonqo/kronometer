@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mn.scio.renders;
+package mn.sict.krono.renders;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author lupino
  */
-@WebServlet(name = "ImageDetection", urlPatterns = {"/imageDetection"})
-public class ImageDetection extends HttpServlet {
+@WebServlet(name = "ImageOriginal", urlPatterns = {"/imageOriginal"})
+public class ImageOriginal extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,13 +33,11 @@ public class ImageDetection extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
-    private static BufferedImage bi;
-    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("image/jpg");
-        
+        File f = new File("uploads/"+request.getParameter("img")+".jpg");
+        BufferedImage bi = ImageIO.read(f);
         OutputStream outs = response.getOutputStream();
         ImageIO.write(bi, "jpg", outs);
         outs.close();
@@ -83,8 +81,5 @@ public class ImageDetection extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
-    public void setData(BufferedImage buffImage){
-        this.bi = buffImage;
-    }
+
 }

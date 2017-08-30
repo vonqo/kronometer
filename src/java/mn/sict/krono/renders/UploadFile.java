@@ -3,27 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mn.scio.renders;
+package mn.sict.krono.renders;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
  * @author lupino
  */
-@WebServlet(name = "DownloadTemplate", urlPatterns = {"/DownloadTemplate"})
-public class DownloadTemplate extends HttpServlet {
-    
-    private static String absoluteFileName;
+@WebServlet(name = "UploadFile", urlPatterns = {"/uploadFile"})
+public class UploadFile extends HttpServlet {
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -35,23 +38,26 @@ public class DownloadTemplate extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/zip");
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+
+        String templateName = request.getParameter("demo_name");
+        Part filePart = request.getPart("demo_img");
+        try{
+            // String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
+            InputStream fileContent = filePart.getInputStream();
+            System.out.println(templateName);
+            File file = new File("uploads/"+templateName+".jpg");
+            System.out.println(file.getAbsolutePath());
+            OutputStream outputStream = new FileOutputStream(file);
+            IOUtils.copy(fileContent, outputStream);
+            outputStream.close();
+        }catch(NullPointerException ex){
+            System.out.println("null param");
+        }
+        response.getWriter().write("uploaded lmao");  
         
-         // This should send the file to browser
-         OutputStream out = response.getOutputStream();
-         File my_file = new File(absoluteFileName);
-         FileInputStream in = new FileInputStream(my_file);
-         byte[] buffer = new byte[4096];
-         int length;
-         while ((length = in.read(buffer)) > 0){
-            out.write(buffer, 0, length);
-         }
-         in.close();
-         out.flush();
-    }
-    
-    public void setFile(String FILE){
-        this.absoluteFileName = FILE;
+        System.out.println("fking shit");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

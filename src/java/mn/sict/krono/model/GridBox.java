@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mn.scio.processor;
+package mn.sict.krono.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +51,10 @@ public class GridBox {
     
     public void setUnitH(int unit){
         this.unit_h = unit;
+    }
+    
+    public int getArea(){
+        return this.area;
     }
     
     public void merge(){

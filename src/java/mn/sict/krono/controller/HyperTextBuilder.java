@@ -1,5 +1,6 @@
-package mn.scio.processor;
+package mn.sict.krono.controller;
 
+import mn.sict.krono.model.GridBox;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +15,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletContext;
-import mn.scio.renders.DownloadTemplate;
+import mn.sict.krono.renders.DownloadTemplate;
 import org.opencv.core.Rect;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  *
@@ -72,7 +75,6 @@ public class HyperTextBuilder {
             Logger.getLogger(HyperTextBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.file = Paths.get(templateDir + "/index.html");
-
         
         // Construct HTML
         setHeader();
@@ -86,21 +88,7 @@ public class HyperTextBuilder {
      */
     private void bootstrapGrid(List<GridBox> rect, int colSize){
         
-        // lame ass bulle sort
-        // sort by area
-        GridBox temp;
-        for (int i = 0; i < rect.size(); i++) {
-            for (int j = 1; j < (rect.size() - i); j++) {
-                if (rect.get(j - 1).area < rect.get(j).area) {
-                    temp = rect.get(j - 1);
-                    rect.set(j-1, rect.get(j));
-                    rect.set(j, temp);
-                }
-            }
-        }
-//        for (int i = 0; i < rect.size(); i++){
-//            System.out.println("y: "+rect.get(i).rect_y+"("+rect.get(i).height+") | x: "+rect.get(i).rect_x+"("+rect.get(i).width+") | Area: "+ rect.get(i).area);
-//        }
+        rect.sort(Comparator.comparing(GridBox::getArea));
         
         for (int i = 0; i < rect.size()-1; i++){
             GridBox i2 = rect.get(i);
@@ -137,16 +125,6 @@ public class HyperTextBuilder {
                 i--;
             }
         }
-        
-        
-//        for (int i = 0; i < rect.size(); i++){
-//            System.out.println("y: "+rect.get(i).y+" | x: "+rect.get(i).x+" | Area: "+ rect.get(i).area);
-//            if(!rect.get(i).childs.isEmpty()){
-//                for(int e = 0; e < rect.get(i).childs.size(); e++){
-//                    System.out.println("    [child] y: "+rect.get(i).childs.get(e).y+" | x: "+rect.get(i).childs.get(e).x+" | Area: "+ rect.get(i).childs.get(e).area);
-//                }
-//            }
-//        }
     }
 
     private void setBody() {
