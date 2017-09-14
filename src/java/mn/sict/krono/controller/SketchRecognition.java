@@ -38,10 +38,10 @@ public class SketchRecognition {
 
     private void setFilter() {
         //Apply gaussian blur to remove noise
-        Imgproc.GaussianBlur(image, image, new Size(1, 1), 0);
+        Imgproc.GaussianBlur(image, image, new Size(5, 5), 0);
 
         //Threshold
-        Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 3, 1);
+        Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 7, 1);
         
         //Invert the image
         Core.bitwise_not(image, image);

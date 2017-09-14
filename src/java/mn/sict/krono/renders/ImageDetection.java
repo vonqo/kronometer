@@ -38,10 +38,10 @@ public class ImageDetection extends HttpServlet {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("image/jpg");
+        response.setContentType("image/png");
         
         OutputStream outs = response.getOutputStream();
-        ImageIO.write(bi, "jpg", outs);
+        ImageIO.write(bi, "png", outs);
         outs.close();
     }
 
